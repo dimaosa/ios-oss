@@ -152,7 +152,10 @@ public final class CommentsViewModel: CommentsViewModelType, CommentsViewModelIn
       .take(first: 1)
       .observeValues { project, update in
         AppEnvironment.current.koala.trackCommentsView(
-          project: project, update: update, context: update == nil ? .project : .update
+          project: project,
+          update: update,
+          context: update == nil ? .project : .update,
+          location: update == nil ? .projectComments : .updateComments
         )
       }
 
@@ -160,7 +163,10 @@ public final class CommentsViewModel: CommentsViewModelType, CommentsViewModelIn
       .takeWhen(pageCount.skip(first: 1).filter { $0 == 1 })
       .observeValues { project, update in
         AppEnvironment.current.koala.trackLoadNewerComments(
-          project: project, update: update, context: update == nil ? .project : .update
+          project: project,
+          update: update,
+          context: update == nil ? .project : .update,
+          location: update == nil ? .projectComments : .updateComments
         )
       }
 
@@ -169,7 +175,11 @@ public final class CommentsViewModel: CommentsViewModelType, CommentsViewModelIn
       .map(unpack)
       .observeValues { project, update, pageCount in
         AppEnvironment.current.koala.trackLoadOlderComments(
-          project: project, update: update, page: pageCount, context: update == nil ? .project : .update
+          project: project,
+          update: update,
+          page: pageCount,
+          context: update == nil ? .project : .update,
+          location: update == nil ? .projectComments : .updateComments
         )
       }
   }

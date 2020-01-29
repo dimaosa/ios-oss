@@ -1045,7 +1045,12 @@ public final class Koala {
 
   // MARK: - Comments Events
 
-  public func trackLoadNewerComments(project: Project, update: Update?, context: CommentsContext) {
+  public func trackLoadNewerComments(
+    project: Project,
+    update: Update?,
+    context: CommentsContext,
+    location: LocationContext
+  ) {
     let props = projectProperties(from: project, loggedInUser: self.loggedInUser)
       .withAllValuesFrom(update.map { properties(update: $0) } ?? [:])
       .withAllValuesFrom(["context": context.trackingString])
@@ -1053,19 +1058,28 @@ public final class Koala {
     // Deprecated events
     switch context {
     case .project:
-      self.track(event: "Project Comment Load New", properties: props.withAllValuesFrom(deprecatedProps))
+      self.track(
+        event: "Project Comment Load New",
+        location: location,
+        properties: props.withAllValuesFrom(deprecatedProps)
+      )
     case .update:
-      self.track(event: "Update Comment Load New", properties: props.withAllValuesFrom(deprecatedProps))
+      self.track(
+        event: "Update Comment Load New",
+        location: location,
+        properties: props.withAllValuesFrom(deprecatedProps)
+      )
     }
 
-    self.track(event: "Loaded Newer Comments", properties: props)
+    self.track(event: "Loaded Newer Comments", location: location, properties: props)
   }
 
   public func trackLoadOlderComments(
     project: Project,
     update: Update?,
     page: Int,
-    context: CommentsContext
+    context: CommentsContext,
+    location: LocationContext
   ) {
     let props = projectProperties(from: project, loggedInUser: self.loggedInUser)
       .withAllValuesFrom(update.map { properties(update: $0) } ?? [:])
@@ -1074,12 +1088,20 @@ public final class Koala {
     // Deprecated events
     switch context {
     case .project:
-      self.track(event: "Project Comment Load Older", properties: props.withAllValuesFrom(deprecatedProps))
+      self.track(
+        event: "Project Comment Load Older",
+        location: location,
+        properties: props.withAllValuesFrom(deprecatedProps)
+      )
     case .update:
-      self.track(event: "Update Comment Load Older", properties: props.withAllValuesFrom(deprecatedProps))
+      self.track(
+        event: "Update Comment Load Older",
+        location: location,
+        properties: props.withAllValuesFrom(deprecatedProps)
+      )
     }
 
-    self.track(event: "Loaded Older Comments", properties: props)
+    self.track(event: "Loaded Older Comments", location: location, properties: props)
   }
 
   public func trackOpenedCommentEditor(
@@ -1153,7 +1175,12 @@ public final class Koala {
     self.track(event: "Update Comment Create", properties: props)
   }
 
-  public func trackCommentsView(project: Project, update: Update?, context: CommentsContext) {
+  public func trackCommentsView(
+    project: Project,
+    update: Update?,
+    context: CommentsContext,
+    location: LocationContext
+  ) {
     let props = projectProperties(from: project, loggedInUser: self.loggedInUser)
       .withAllValuesFrom(update.map { properties(update: $0) } ?? [:])
       .withAllValuesFrom(["context": context.trackingString])
@@ -1161,12 +1188,20 @@ public final class Koala {
     // Deprecated events
     switch context {
     case .project:
-      self.track(event: "Project Comment View", properties: props.withAllValuesFrom(deprecatedProps))
+      self.track(
+        event: "Project Comment View",
+        location: location,
+        properties: props.withAllValuesFrom(deprecatedProps)
+      )
     case .update:
-      self.track(event: "Update Comment View", properties: props.withAllValuesFrom(deprecatedProps))
+      self.track(
+        event: "Update Comment View",
+        location: location,
+        properties: props.withAllValuesFrom(deprecatedProps)
+      )
     }
 
-    self.track(event: "Viewed Comments", properties: props)
+    self.track(event: "Viewed Comments", location: location, properties: props)
   }
 
   /**
