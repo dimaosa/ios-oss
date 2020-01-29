@@ -136,6 +136,7 @@ public final class RewardsCollectionViewModel: RewardsCollectionViewModelType,
           project: project,
           reward: reward,
           context: context,
+          location: .rewards,
           refTag: refTag
         )
       }

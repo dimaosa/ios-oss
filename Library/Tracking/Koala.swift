@@ -696,7 +696,7 @@ public final class Koala {
   ) {
     let props = projectProperties(from: project, loggedInUser: self.loggedInUser)
       .withAllValuesFrom(pledgeProperties(from: reward))
-      .withAllValuesFrom(contextProperties(pledgeFlowContext: context))
+      .withAllValuesFrom(contextProperties(pledgeFlowContext: context, locationContext: .rewards))
 
     self.track(
       event: DataLakeWhiteListedEvent.selectRewardButtonClicked.rawValue,
@@ -722,7 +722,7 @@ public final class Koala {
   ) {
     let props = projectProperties(from: project, loggedInUser: self.loggedInUser)
       .withAllValuesFrom(pledgeProperties(from: reward))
-      .withAllValuesFrom(contextProperties(pledgeFlowContext: context))
+      .withAllValuesFrom(contextProperties(pledgeFlowContext: context, locationContext: .pledgeScreen))
 
     self.track(
       event: DataLakeWhiteListedEvent.checkoutPaymentPageViewed.rawValue,
@@ -751,7 +751,7 @@ public final class Koala {
       .withAllValuesFrom(pledgeProperties(from: reward))
       .withAllValuesFrom(checkoutProperties(from: checkoutData))
       // the context is always "newPledge" for this event
-      .withAllValuesFrom(contextProperties(pledgeFlowContext: .newPledge))
+      .withAllValuesFrom(contextProperties(pledgeFlowContext: .newPledge, locationContext: .pledgeScreen))
 
     self.track(
       event: DataLakeWhiteListedEvent.pledgeSubmitButtonClicked.rawValue,
@@ -772,11 +772,12 @@ public final class Koala {
     project: Project,
     reward: Reward,
     context: Koala.PledgeContext,
+    location: Koala.LocationContext,
     refTag: RefTag?
   ) {
     let props = projectProperties(from: project, loggedInUser: self.loggedInUser)
       .withAllValuesFrom(pledgeProperties(from: reward))
-      .withAllValuesFrom(contextProperties(pledgeFlowContext: context))
+      .withAllValuesFrom(contextProperties(pledgeFlowContext: context, locationContext: location))
 
     self.track(
       event: DataLakeWhiteListedEvent.addNewCardButtonClicked.rawValue,
@@ -801,7 +802,7 @@ public final class Koala {
     var props = projectProperties(from: project)
       .withAllValuesFrom(pledgeProperties(from: reward))
       // the context is always "newPledge" for this event
-      .withAllValuesFrom(contextProperties(pledgeFlowContext: .newPledge))
+      .withAllValuesFrom(contextProperties(pledgeFlowContext: .newPledge, locationContext: .thanks))
 
     if let checkoutData = checkoutData {
       props = props.withAllValuesFrom(checkoutProperties(from: checkoutData))
@@ -2154,13 +2155,14 @@ public final class Koala {
   // Private tracking method that merges in default properties.
   private func track(
     event: String,
+    location: Koala.LocationContext? = nil,
     properties: [String: Any] = [:],
     refTag: String? = nil,
     referrerCredit: String? = nil
   ) {
     let props = self.sessionProperties(refTag: refTag, referrerCredit: referrerCredit)
       .withAllValuesFrom(userProperties(for: self.loggedInUser, config: self.config))
-      .withAllValuesFrom(contextProperties())
+      .withAllValuesFrom(contextProperties(locationContext: location))
       .withAllValuesFrom(properties)
 
     self.logEventCallback?(event, props)
@@ -2424,11 +2426,13 @@ private func properties(category: KsApi.Category, prefix: String = "category_") 
 
 private func contextProperties(
   pledgeFlowContext: Koala.PledgeContext? = nil,
+  locationContext: Koala.LocationContext? = nil,
   tabBarLabel: Koala.TabBarItemLabel? = nil,
   prefix: String = "context_"
 ) -> [String: Any] {
   var result: [String: Any] = [:]
 
+  result["location"] = locationContext?.rawValue
   result["pledge_flow"] = pledgeFlowContext?.trackingString
   result["timestamp"] = AppEnvironment.current.dateType.init().timeIntervalSince1970
   result["tab_bar_label"] = tabBarLabel?.trackingString
