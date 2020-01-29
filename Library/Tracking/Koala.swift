@@ -487,6 +487,7 @@ public final class Koala {
   public func trackActivities(count: Int) {
     self.track(
       event: DataLakeWhiteListedEvent.activityFeedViewed.rawValue,
+      location: .activities,
       properties: ["activities_count": count]
     )
   }
@@ -1604,7 +1605,7 @@ public final class Koala {
   }
 
   public func trackAccountView() {
-    self.track(event: "Viewed Account")
+    self.track(event: "Viewed Account", location: .account)
   }
 
   // MARK: - Create Password Tracking
@@ -1621,25 +1622,25 @@ public final class Koala {
   // MARK: - Change Email Tracking
 
   public func trackChangeEmailView() {
-    self.track(event: "Viewed Change Email")
+    self.track(event: "Viewed Change Email", location: .changeEmail)
   }
 
   public func trackChangeEmail() {
-    self.track(event: "Changed Email")
+    self.track(event: "Changed Email", location: .changeEmail)
   }
 
   // MARK: - Change Password Tracking
 
   public func trackChangePasswordView() {
-    self.track(event: "Viewed Change Password")
+    self.track(event: "Viewed Change Password", location: .changePassword)
   }
 
   public func trackChangePassword() {
-    self.track(event: "Changed Password")
+    self.track(event: "Changed Password", location: .changePassword)
   }
 
   public func trackResentVerificationEmail() {
-    self.track(event: "Resent Verification Email")
+    self.track(event: "Resent Verification Email", location: .changeEmail)
   }
 
   public func trackChangedCurrency(_ currency: Currency) {
